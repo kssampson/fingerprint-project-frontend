@@ -1,12 +1,15 @@
 import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Stack, VStack } from "@chakra-ui/react"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { validateInputs } from "../utils/validateInputs";
 import createUserSubmit from "../utils/createUserSubmit";
 import { useToast } from '@chakra-ui/react'
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
-const Form = () => {
+const LoginForm = () => {
 
   const toast = useToast();
+
+  const [fPHash, setFpHash] = useState<string | null>(null);
 
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -92,6 +95,18 @@ const Form = () => {
     }
   }
 
+  useEffect(() => {
+    const setFp = async () => {
+      const fp = await FingerprintJS.load();
+
+      const { visitorId } = await fp.get();
+
+      setFpHash(visitorId);
+    };
+
+    setFp();
+  }, []);
+
   return (
     <Box>
       <VStack >
@@ -145,4 +160,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default LoginForm;

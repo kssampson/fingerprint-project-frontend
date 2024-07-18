@@ -2,12 +2,12 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Box } from '@chakra-ui/react';
-import Form from './components/Form';
+import LoginForm from './components/LoginForm';
 
 function App() {
   return (
     <>
-      <Form />
+      <LoginForm />
     </>
   );
 }
