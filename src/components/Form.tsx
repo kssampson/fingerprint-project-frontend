@@ -101,32 +101,41 @@ const Form = () => {
             <Box>
               <FormControl isInvalid={isErrorName} isRequired>
                 <FormLabel>Username:</FormLabel>
-                <Input />
-
+                <Input type='text' value={name ? name : ""} onChange={onChangeName} />
+                {!isErrorName ? null : (
+                  <FormErrorMessage>Name is required.</FormErrorMessage>
+                )}
               </FormControl>
             </Box>
             <Box>
-              <FormControl  isRequired>
+              <FormControl isInvalid={isErrorEmail} isRequired>
                 <FormLabel>Email:</FormLabel>
-                <Input  />
-
+                <Input type='email' value={email} onChange={onChangeEmail} />
+                {!isErrorEmail ? null : (
+                  <FormErrorMessage>Email is required.</FormErrorMessage>
+                )}
               </FormControl>
             </Box>
             <Box>
-              <FormControl isRequired>
+              <FormControl isInvalid={isErrorPassword} isRequired>
                 <FormLabel>Password:</FormLabel>
-                <Input/>
-
+                <Input type='password' value={password} onChange={onChangePassword} />
+                {!isErrorPassword ? null : (
+                  <FormErrorMessage>Password is required.</FormErrorMessage>
+                )}
               </FormControl>
             </Box>
             <Box>
               <FormControl isInvalid={isErrorSecondPassword} isRequired>
                 <FormLabel>Confirm Password:</FormLabel>
-                <Input  />
+                <Input type='password' value={secondPassword} onChange={onChangeSecondPassword} />
+                {!isErrorSecondPassword ? null : (
+                  <FormErrorMessage>Passwords Do Not Match.</FormErrorMessage>
+                )}
               </FormControl>
             </Box>
             <Button
-
+            onClick={onSubmit}
             >Submit
             </Button>
           </Stack>
