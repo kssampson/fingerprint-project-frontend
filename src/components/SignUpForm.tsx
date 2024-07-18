@@ -5,7 +5,7 @@ import createUserSubmit from "../utils/createUserSubmit";
 import { useToast } from '@chakra-ui/react'
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
-const LoginForm = () => {
+const SignUpForm = () => {
 
   const toast = useToast();
 
@@ -54,7 +54,7 @@ const LoginForm = () => {
     if (!validateInputs.isValidName(name) || !validateInputs.isValidEmail(email) || !validateInputs.isValidPassword(password) || !validateInputs.isValidSecondPassword(password, secondPassword)) {
       return;
     } else {
-      await createUserSubmit({username: name, email: email, password: password})
+      await createUserSubmit({username: name, email: email, password: password, fPHash: fPHash})
       .then(() => {
         toast({
           title: `Account created. Please log in.`,
@@ -160,4 +160,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default SignUpForm;
