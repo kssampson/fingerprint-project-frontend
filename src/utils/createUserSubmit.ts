@@ -2,10 +2,10 @@ import axios from 'axios';
 
 const createUserSubmit = async (userData: object) => {
   try {
-    await axios.post('http://localhost:3001/auth/sign-up', userData);
-  } catch(error) {
-    console.log('Failed on front end: ', error)
-    throw error
+    const response = await axios.post('http://localhost:3001/auth/sign-up', userData);
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 }
 

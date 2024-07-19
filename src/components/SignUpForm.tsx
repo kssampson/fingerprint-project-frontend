@@ -53,53 +53,78 @@ const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
   }
 
   const onSubmit = async () => {
-    setUsernameSubmitted(true);
-    setEmailSubmitted(true);
-    setPasswordSubmitted(true);
-    setSecondPasswordSubmitted(true);
-    if (!validateInputs.isValidUsername(username) || !validateInputs.isValidEmail(email) || !validateInputs.isValidPassword(password) || !validateInputs.isValidSecondPassword(password, secondPassword)) {
-      return;
-    } else {
-      await createUserSubmit({username: username, email: email, password: password, visitorId: fPHash, has2FA: has2FA})
-      .then(() => {
-        toast({
-          title: `Account created. Please log in.`,
-          position: "top-right",
-          status: 'success',
-          duration: 3000,
-          isClosable: true,
-        })
-        setUsername("");
-        setEmail("");
-        setPassword("");
-        setSecondPassword("");
-        setUsernameSubmitted(false);
-        setEmailSubmitted(false);
-        setPasswordSubmitted(false);
-        setSecondPasswordSubmitted(false);
+    try {
+      setUsernameSubmitted(true);
+      setEmailSubmitted(true);
+      setPasswordSubmitted(true);
+      setSecondPasswordSubmitted(true);
 
-      })
-      .catch((error) =>{
+      if (!validateInputs.isValidUsername(username) || !validateInputs.isValidEmail(email) || !validateInputs.isValidPassword(password) || !validateInputs.isValidSecondPassword(password, secondPassword)) {
+        return;
+      }
+
+      const response = await createUserSubmit({
+        username: username,
+        email: email,
+        password: password,
+        visitorId: fPHash,
+        has2FA: has2FA
+      });
+
+      if (response.success === false) {
         toast({
-          title: `Error creating account. Error: ${error}`,
+          title: `Error:`,
           position: "top-right",
-          description: `Please try again`,
+          description: `${response.message}`,
           status: 'error',
-          duration: 3000,
+          duration: 7000,
           isClosable: true,
-        })
-        setUsername("");
-        setEmail("");
-        setPassword("");
-        setSecondPassword("");
-        setUsernameSubmitted(false);
-        setEmailSubmitted(false);
-        setPasswordSubmitted(false);
-        setSecondPasswordSubmitted(false);
-        console.error();
-      })
+        });
+      } else if (response.success === true) {
+        toast({
+          title: `Success!`,
+          position: "top-right",
+          description: `${response.message} Please Log-in.`,
+          status: 'success',
+          duration: 7000,
+          isClosable: true,
+        });
+      }
+
+
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setSecondPassword("");
+
+      setUsernameSubmitted(false);
+      setEmailSubmitted(false);
+      setPasswordSubmitted(false);
+      setSecondPasswordSubmitted(false);
+    } catch (error) {
+      toast({
+        title: `Error creating account. Error: ${error}`,
+        position: "top-right",
+        description: `Please try again`,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setSecondPassword("");
+
+      setUsernameSubmitted(false);
+      setEmailSubmitted(false);
+      setPasswordSubmitted(false);
+      setSecondPasswordSubmitted(false);
+
+      console.error(error);
     }
-  }
+  };
+
 
   useEffect(() => {
     const setFp = async () => {
@@ -119,7 +144,8 @@ const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
       email: email,
       password: password,
       secondPassword: secondPassword,
-      visitorId: fPHash
+      visitorId: fPHash,
+      has2FA: has2FA
     });
     console.log('response: ', response)
   }
