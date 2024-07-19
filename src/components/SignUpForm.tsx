@@ -4,31 +4,37 @@ import { validateInputs } from "../utils/validateInputs";
 import createUserSubmit from "../utils/createUserSubmit";
 import { useToast } from '@chakra-ui/react'
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import axios from "axios";
 
-const SignUpForm = () => {
+type Props = {
+  has2FA: boolean;
+  setHas2Fa: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
 
   const toast = useToast();
 
   const [fPHash, setFpHash] = useState<string | null>(null);
 
-  const [name, setName] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [secondPassword, setSecondPassword] = useState<string>("")
 
-  const [nameSubmitted, setNameSubmitted] = useState<boolean>(false);
+  const [usernameSubmitted, setUsernameSubmitted] = useState<boolean>(false);
   const [emailSubmitted, setEmailSubmitted] = useState<boolean>(false);
   const [passwordSubmitted, setPasswordSubmitted] = useState<boolean>(false);
   const [secondPasswordSubmitted, setSecondPasswordSubmitted] = useState<boolean>(false);
 
-  const isErrorName = !validateInputs.isValidName(name) && nameSubmitted;
+  const isErrorUsername = !validateInputs.isValidUsername(username) && usernameSubmitted;
   const isErrorEmail = !validateInputs.isValidEmail(email) && emailSubmitted;
   const isErrorPassword = !validateInputs.isValidPassword(password) && passwordSubmitted;
   const isErrorSecondPassword = !validateInputs.isValidSecondPassword(password, secondPassword) && secondPasswordSubmitted;
 
-  const onChangeName = (e: any) => {
-    setNameSubmitted(false);
-    setName(e.target.value);
+  const onChangeusername = (e: any) => {
+    setUsernameSubmitted(false);
+    setUsername(e.target.value);
   }
 
   const onChangeEmail = (e: any) => {
@@ -47,14 +53,14 @@ const SignUpForm = () => {
   }
 
   const onSubmit = async () => {
-    setNameSubmitted(true);
+    setUsernameSubmitted(true);
     setEmailSubmitted(true);
     setPasswordSubmitted(true);
     setSecondPasswordSubmitted(true);
-    if (!validateInputs.isValidName(name) || !validateInputs.isValidEmail(email) || !validateInputs.isValidPassword(password) || !validateInputs.isValidSecondPassword(password, secondPassword)) {
+    if (!validateInputs.isValidUsername(username) || !validateInputs.isValidEmail(email) || !validateInputs.isValidPassword(password) || !validateInputs.isValidSecondPassword(password, secondPassword)) {
       return;
     } else {
-      await createUserSubmit({username: name, email: email, password: password, fPHash: fPHash})
+      await createUserSubmit({username: username, email: email, password: password, visitorId: fPHash})
       .then(() => {
         toast({
           title: `Account created. Please log in.`,
@@ -63,11 +69,11 @@ const SignUpForm = () => {
           duration: 3000,
           isClosable: true,
         })
-        setName("");
+        setUsername("");
         setEmail("");
         setPassword("");
         setSecondPassword("");
-        setNameSubmitted(false);
+        setUsernameSubmitted(false);
         setEmailSubmitted(false);
         setPasswordSubmitted(false);
         setSecondPasswordSubmitted(false);
@@ -82,11 +88,11 @@ const SignUpForm = () => {
           duration: 3000,
           isClosable: true,
         })
-        setName("");
+        setUsername("");
         setEmail("");
         setPassword("");
         setSecondPassword("");
-        setNameSubmitted(false);
+        setUsernameSubmitted(false);
         setEmailSubmitted(false);
         setPasswordSubmitted(false);
         setSecondPasswordSubmitted(false);
@@ -107,6 +113,17 @@ const SignUpForm = () => {
     setFp();
   }, []);
 
+  const handleClick = async () => {
+    const response = await axios.post("http://localhost:3001/auth/sign-up", {
+      username: username,
+      email: email,
+      password: password,
+      secondPassword: secondPassword,
+      visitorId: fPHash
+    });
+    console.log('response: ', response)
+  }
+
   return (
     <Box>
       <VStack >
@@ -114,11 +131,11 @@ const SignUpForm = () => {
         <Box maxWidth={"75%"} width={"100%"}>
           <Stack spacing={3}>
             <Box>
-              <FormControl isInvalid={isErrorName} isRequired>
+              <FormControl isInvalid={isErrorUsername} isRequired>
                 <FormLabel>Username:</FormLabel>
-                <Input type='text' value={name ? name : ""} onChange={onChangeName} />
-                {!isErrorName ? null : (
-                  <FormErrorMessage>Name is required.</FormErrorMessage>
+                <Input type='text' value={username ? username : ""} onChange={onChangeusername} />
+                {!isErrorUsername ? null : (
+                  <FormErrorMessage>username is required.</FormErrorMessage>
                 )}
               </FormControl>
             </Box>
@@ -156,6 +173,7 @@ const SignUpForm = () => {
           </Stack>
         </Box>
       </VStack>
+      <Button onClick={handleClick}>click here</Button>
     </Box>
   );
 };

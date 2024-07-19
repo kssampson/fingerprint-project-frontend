@@ -5,25 +5,27 @@ import login from "../utils/login";
 
 type Props = {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  has2FA: boolean;
+  setHas2Fa: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Login = ( { setIsLoggedIn }: Props ) => {
+const Login = ( { setIsLoggedIn, has2FA, setHas2Fa }: Props ) => {
 
   const toast = useToast();
 
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const [nameSubmitted, setNameSubmitted] = useState(false);
+  const [usernameSubmitted, setUsernameSubmitted] = useState(false);
   const [passwordSubmitted, setPasswordSubmitted] = useState(false);
 
-  const isErrorName = !validateInputs.isValidName(name) && nameSubmitted;
+  const isErrorUsername = !validateInputs.isValidUsername(username) && usernameSubmitted;
   const isErrorPassword = !validateInputs.isValidPassword(password) && passwordSubmitted;
 
 
   const onChangeName = (e: any) => {
-    setNameSubmitted(false);
-    setName(e.target.value);
+    setUsernameSubmitted(false);
+    setUsername(e.target.value);
   }
 
   const onChangePassword = (e: any) => {
@@ -32,25 +34,25 @@ const Login = ( { setIsLoggedIn }: Props ) => {
   }
 
   const onSubmit = async () => {
-    setNameSubmitted(true);
+    setUsernameSubmitted(true);
     setPasswordSubmitted(true);
-    if (!validateInputs.isValidName(name) || !validateInputs.isValidPassword(password)) {
+    if (!validateInputs.isValidUsername(username) || !validateInputs.isValidPassword(password)) {
       return;
     } else {
-      await login({username: name, password: password})
+      await login({username: username, password: password})
       .then((response) => {
         setIsLoggedIn(true);
         toast({
           title: 'Login successful.',
           position: "top-right",
-          description: `Welcome ${name}!`,
+          description: `Welcome ${username}!`,
           status: 'success',
           duration: 3000,
           isClosable: true,
         })
-        setName("");
+        setUsername("");
         setPassword("");
-        setNameSubmitted(false);
+        setUsernameSubmitted(false);
         setPasswordSubmitted(false);
 
       })
@@ -63,9 +65,9 @@ const Login = ( { setIsLoggedIn }: Props ) => {
           duration: 3000,
           isClosable: true,
         })
-        setName("");
+        setUsername("");
         setPassword("");
-        setNameSubmitted(false);
+        setUsernameSubmitted(false);
         setPasswordSubmitted(false);
       })
     }
@@ -78,10 +80,10 @@ const Login = ( { setIsLoggedIn }: Props ) => {
         <Box maxWidth={"75%"} width={"100%"}>
           <Stack spacing={3}>
             <Box>
-              <FormControl isInvalid={isErrorName} isRequired>
+              <FormControl isInvalid={isErrorUsername} isRequired>
                 <FormLabel>User Name:</FormLabel>
-                <Input type='text' value={name ? name : ""} onChange={onChangeName} />
-                {!isErrorName ? null : (
+                <Input type='text' value={username ? username : ""} onChange={onChangeName} />
+                {!isErrorUsername ? null : (
                   <FormErrorMessage>Name is required.</FormErrorMessage>
                 )}
               </FormControl>

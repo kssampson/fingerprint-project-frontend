@@ -5,7 +5,7 @@ const isValidEmail = (email: string) => {
   return email.match(emailFormat) && email.length > 0 ? true : false;
 }
 
-const isValidName = (name: string) => {
+const isValidUsername = (name: string) => {
   return name.length > 0 ? true : false;
 }
 
@@ -17,4 +17,4 @@ const isValidSecondPassword = (password: string, secondPassword: string) => {
   return password === secondPassword && isValidPassword(secondPassword) ? true : false;
 }
 
-export const validateInputs = { isValidEmail, isValidName, isValidPassword, isValidSecondPassword };
+export const validateInputs = { isValidEmail, isValidUsername, isValidPassword, isValidSecondPassword };

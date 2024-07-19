@@ -7,11 +7,13 @@ import Login from './components/Login';
 import LoginSuccessful from './components/LoginSuccessful';
 
 function App() {
+
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [has2FA, setHas2Fa] = useState<boolean>(false);
 
   return (
     <VStack m={6}>
-      <SignUpForm />
+      <SignUpForm has2FA={has2FA} setHas2Fa={setHas2Fa}/>
       <Box>
         <VStack>
         <Heading as='h5' size='md' m={8}>or</Heading>
@@ -20,7 +22,7 @@ function App() {
       {isLoggedIn ? (
         <LoginSuccessful />
       ) : (
-        <Login setIsLoggedIn={setIsLoggedIn}/>
+        <Login setIsLoggedIn={setIsLoggedIn} has2FA={has2FA} setHas2Fa={setHas2Fa}/>
       )}
     </VStack>
   );
