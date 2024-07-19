@@ -60,7 +60,7 @@ const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
     if (!validateInputs.isValidUsername(username) || !validateInputs.isValidEmail(email) || !validateInputs.isValidPassword(password) || !validateInputs.isValidSecondPassword(password, secondPassword)) {
       return;
     } else {
-      await createUserSubmit({username: username, email: email, password: password, visitorId: fPHash})
+      await createUserSubmit({username: username, email: email, password: password, visitorId: fPHash, has2FA: has2FA})
       .then(() => {
         toast({
           title: `Account created. Please log in.`,
