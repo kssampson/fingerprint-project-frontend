@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const createUserSubmit = async (userData: object) => {
-  console.log('userData: ', userData)
   try {
     await axios.post('http://localhost:3001/auth/sign-up', userData);
   } catch(error) {
