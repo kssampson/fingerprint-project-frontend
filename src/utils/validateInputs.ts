@@ -17,4 +17,12 @@ const isValidSecondPassword = (password: string, secondPassword: string) => {
   return password === secondPassword && isValidPassword(secondPassword) ? true : false;
 }
 
-export const validateInputs = { isValidEmail, isValidUsername, isValidPassword, isValidSecondPassword };
+const isValidThreeNums = (strNum: string) => {
+  return strNum.length === 3 ? true : false;
+}
+
+const isValidFourNums = (strNum: string) => {
+  return strNum.length === 4 ? true : false;
+}
+
+export const validateInputs = { isValidEmail, isValidUsername, isValidPassword, isValidSecondPassword, isValidThreeNums, isValidFourNums };
