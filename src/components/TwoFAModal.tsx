@@ -1,6 +1,7 @@
 import { Text, Button, FormControl, FormErrorMessage, FormLabel, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, VStack, useToast, Spinner } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { validateInputs } from "../utils/validateInputs";
+import verifyEmail from "../utils/verifyEmail";
 
 type Props = {
   isOpen: boolean;
@@ -18,8 +19,6 @@ const TwoFAModal = ( { isOpen, onOpen, onClose }: Props ) => {
   const [email, setEmail] = useState<string>("");
   const [emailSubmitted, setEmailSubmitted] = useState<boolean>(false);
   const isErrorEmail = !validateInputs.isValidEmail(email) && emailSubmitted;
-
-  console.log(email, emailSubmitted)
 
   const onChangeEmail = (e: any) => {
     setEmailSubmitted(false);
@@ -40,15 +39,44 @@ const TwoFAModal = ( { isOpen, onOpen, onClose }: Props ) => {
     onClose();
   }
 
+  const closeThanksForSubmittingModal = () => {
+    setEmail('');
+    setEmailSubmitted(false);
+    onClose();
+  }
+
 
   const handleSubmit = async () => {
     try {
       setEmailSubmitted(true);
-
-      //email logic
-
-      //await backend logic to send number goes here
-
+      const respsonse = await verifyEmail(email);
+      if (respsonse.success) {
+        toast({
+          title: `Success:`,
+          position: "top-right",
+          description: `${respsonse.message}`,
+          status: 'success',
+          duration: 7000,
+          isClosable: true,
+        });
+        setTimeout(() => {
+          setEmail('');
+          setEmailSubmitted(false);
+          onClose();
+        })
+      } else {
+        toast({
+          title: `Error:`,
+          position: "top-right",
+          description: `${respsonse.message}`,
+          status: 'error',
+          duration: 7000,
+          isClosable: true,
+        });
+        setEmail('');
+        setEmailSubmitted(false);
+        onClose();
+      }
     } catch (error) {
       toast({
         title: `Error: ${error}`,
@@ -58,21 +86,39 @@ const TwoFAModal = ( { isOpen, onOpen, onClose }: Props ) => {
         duration: 7000,
         isClosable: true,
       });
-
+      setEmail('');
+      setEmailSubmitted(false);
+      onClose();
     }
   }
 
   return (
       <>
-        <Button onClick={onOpen}>Open Modal</Button>
+      {emailSubmitted ? (
+        <>
+         <Modal isOpen={isOpen} onClose={closeThanksForSubmittingModal}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Thank You For Submitting</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              Please check your email. Please close this tab in your browser.
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme='blue' mr={3} onClick={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+        </>
+      ) : (
+        <>
+        {/* <Button onClick={onOpen}>Open Modal</Button> */}
         <Modal initialFocusRef={initialRef} finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Verify Via Email</ModalHeader>
-            {emailSubmitted ? (
-              <Spinner thickness='4px'speed='0.65s' emptyColor='gray.200' color='blue.500'size='xl'/>
-            ) : (
-              <>
               <ModalCloseButton onClick={onCancel}/>
               <ModalBody pb={6}>
                 <FormControl>
@@ -87,8 +133,6 @@ const TwoFAModal = ( { isOpen, onOpen, onClose }: Props ) => {
                   </HStack>
                 </FormControl>
               </ModalBody>
-              </>
-            )}
             {!emailSubmitted && (
               <>
               <ModalFooter>
@@ -101,6 +145,8 @@ const TwoFAModal = ( { isOpen, onOpen, onClose }: Props ) => {
             )}
           </ModalContent>
         </Modal>
+        </>
+      )}
     </>
   )
 };

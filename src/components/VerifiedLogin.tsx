@@ -1,16 +1,16 @@
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Stack, VStack, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { validateInputs } from "../utils/validateInputs";
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Stack, VStack, useToast, Spinner } from "@chakra-ui/react"
-import login from "../utils/login";
+import verifiedLogin from "../utils/verifiedLogin";
 
 type Props = {
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  isOpen: boolean;
-  onOpen: () => void;
-  onClose: () => void;
+  setToggleHasTokenModal: React.Dispatch<React.SetStateAction<boolean>>
+  token: string | null;
+  setToken: React.Dispatch<React.SetStateAction<string | null>>
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Login = ( { setIsLoggedIn, isOpen, onOpen}: Props ) => {
+const VerifiedLogin = ( {setToggleHasTokenModal, token, setToken, setIsLoggedIn}: Props ) => {
 
   const toast = useToast();
 
@@ -42,77 +42,74 @@ const Login = ( { setIsLoggedIn, isOpen, onOpen}: Props ) => {
   }
 
   const onSubmit = async () => {
-      try {
-        setEmailSubmitted(true);
-        setPasswordSubmitted(true);
-        const response = (await login(email, password)).data;
-        if (response.success) {
-          resetEmailPasswordStates();
-          setIsLoggedIn(true);
-          toast({
-            title: "Login successful.",
-            position: "top-right",
-            description: `${response.message}`,
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          });
-          toast({
-            title: "Login successful.",
-            position: "top-right",
-            description: `${response.message}`,
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          });
-        } else if (!response.success) {
-          //check for invalid email
-          if (response.inValidEmail) {
-            toast({
-              title: "Error:",
-              position: "top-right",
-              description: `${response.message}`,
-              status: "error",
-              duration: 3000,
-              isClosable: true,
-            });
-            resetEmailPasswordStates();
-          } else if (response.inValidPassword) {
-            toast({
-              title: "Error:",
-              position: "top-right",
-              description: `${response.message}`,
-              status: "error",
-              duration: 3000,
-              isClosable: true,
-            });
-            resetEmailPasswordStates();
-          } else if (response.needs2Fa) {
-            toast({
-              title: "Notice: ",
-              position: "top-right",
-              description: `${response.message}`,
-              status: "error",
-              duration: 3000,
-              isClosable: true,
-            });
-            onOpen();
-          }
-        }
+    try {
+      setEmailSubmitted(true);
+      setPasswordSubmitted(true);
+      const response = (await verifiedLogin(email, password, token)).data;
+      if (response.success) {
+        setToken(null);
+        setToggleHasTokenModal(false);
         resetEmailPasswordStates();
-        return;
-      } catch (error) {
+        setIsLoggedIn(true);
         toast({
-          title: "Error logging in. Please try again.",
+          title: "Login successful.",
           position: "top-right",
-          description: `${error}`,
-          status: "error",
+          description: `${response.message}`,
+          status: "success",
           duration: 3000,
           isClosable: true,
         });
-        resetEmailPasswordStates();
+      } else if (!response.success) {
+        //check for invalid email
+        if (response.inValidEmail) {
+          toast({
+            title: "Error:",
+            position: "top-right",
+            description: `${response.message}`,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+          resetEmailPasswordStates();
+          setToggleHasTokenModal(false);
+        } else if (response.inValidPassword) {
+          toast({
+            title: "Error:",
+            position: "top-right",
+            description: `${response.message}`,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+          resetEmailPasswordStates();
+          setToggleHasTokenModal(false);
+        } else if (response.needs2Fa) {
+          toast({
+            title: "Notice: ",
+            position: "top-right",
+            description: `${response.message}`,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
       }
-  }
+      resetEmailPasswordStates();
+      setToggleHasTokenModal(false);
+      return;
+    } catch (error) {
+      toast({
+        title: "Error logging in. Please try again.",
+        position: "top-right",
+        description: `${error}`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      resetEmailPasswordStates();
+      setToggleHasTokenModal(false);
+    }
+}
 
   return (
     <Box>
@@ -147,6 +144,6 @@ const Login = ( { setIsLoggedIn, isOpen, onOpen}: Props ) => {
       </VStack>
     </Box>
   )
-}
+};
 
-export default Login
+export default VerifiedLogin;

@@ -88,8 +88,6 @@ const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
           duration: 7000,
           isClosable: true,
         });
-        // onOpen();
-        // <TwoFAModal />
       }
 
 
@@ -138,18 +136,6 @@ const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
 
     setFp();
   }, []);
-
-  // const handleClick = async () => {
-  //   const response = await axios.post("http://localhost:3001/auth/sign-up", {
-  //     username: username,
-  //     email: email,
-  //     password: password,
-  //     secondPassword: secondPassword,
-  //     visitorId: fPHash,
-  //     has2FA: has2FA
-  //   });
-  //   console.log('response: ', response)
-  // }
 
   return (
     <Box>
@@ -200,8 +186,6 @@ const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
           </Stack>
         </Box>
       </VStack>
-      {/* <Button onClick={handleClick}>click here</Button> */}
-      {/* <TwoFAModal isOpen={isOpen} onOpen={onOpen} onClose={onClose}/> */}
     </Box>
   );
 };
