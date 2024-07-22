@@ -1,12 +1,12 @@
 # Description
 
-Front end React form application for user authentication. It is meant to be used with features including sign-up, log-in, and two-factor authentication ([Backend Repository](https://github.com/kssampson/fingerprint-project-backend.git)). The app utilizes Chakra UI for styling and FingerprintJS for generating unique visitor IDs.
+Front end React form application for user authentication. It is meant to be used with features including sign-up, log-in, and two-factor authentication (You can find it here: [Backend Repository](https://github.com/kssampson/fingerprint-project-backend.git)). The app utilizes Chakra UI for styling and FingerprintJS for generating unique visitor IDs.
 
 ## Backend
 
 This application requires the backend server for handling user authentication and related operations. You can find the backend repository at the following link:
 
-[Backend Repository](https://github.com/kssampson/fingerprint-project-backend.git)
+[Backend Repository](https://github.com/kssampson/fingerprint-project-frontend.git)
 
 ## Usage
 
