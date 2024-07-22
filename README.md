@@ -21,7 +21,7 @@ This application requires the backend server for handling user authentication an
 1. Clone the repository:
     ```bash
     git clone https://github.com/kssampson/fingerprint-project-frontend.git
-    cd fingerprint-project-backend
+    cd fingerprint-project-frontend
     ```
 
 2. Install dependencies:
