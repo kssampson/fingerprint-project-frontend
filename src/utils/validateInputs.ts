@@ -25,4 +25,8 @@ const isValidFourNums = (strNum: string) => {
   return strNum.length === 4 ? true : false;
 }
 
-export const validateInputs = { isValidEmail, isValidUsername, isValidPassword, isValidSecondPassword, isValidThreeNums, isValidFourNums };
+const isValidOtp = (otp: string) => {
+  return otp.length === 6;
+}
+
+export const validateInputs = { isValidEmail, isValidUsername, isValidPassword, isValidSecondPassword, isValidThreeNums, isValidFourNums, isValidOtp };
