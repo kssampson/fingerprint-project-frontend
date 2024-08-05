@@ -62,7 +62,7 @@ const Login = ( { visitorId, setIsLoggedIn, username, setUsername, password, set
           resetUsernamePasswordStates();
         } else if (!response.success) {
           //check for invalid email
-          if (response.inValidEmail || response.invalidUsername || response.inValidPassword || response.noVisitorRecord) {
+          if (response.invalidUsername || response.invalidPassword || response.noVisitorRecord) {
             toast({
               title: "Error:",
               position: "top-right",
