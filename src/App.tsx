@@ -77,7 +77,7 @@ function App() {
                     <Box>
                       <VStack>
                         <Heading as='h5' size='md' m={8}>or</Heading>
-                        <Button colorScheme='blue' onClick={handleToggleLogInSignUpClicked}>Login</Button>
+                        <Button onClick={handleToggleLogInSignUpClicked}>Login</Button>
                       </VStack>
                     </Box>
                   </>
@@ -101,7 +101,7 @@ function App() {
                     <Box>
                       <VStack>
                         <Heading as='h5' size='md' m={8}>or</Heading>
-                        <Button colorScheme='blue' onClick={handleToggleLogInSignUpClicked}>Create Account</Button>
+                        <Button onClick={handleToggleLogInSignUpClicked}>Create Account</Button>
                       </VStack>
                     </Box>
                   </>

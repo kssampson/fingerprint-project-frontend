@@ -169,6 +169,7 @@ const SignUpForm = ( { visitorId, setAccountCreated, username, setUsername, emai
               </FormControl>
             </Box>
             <Button
+            colorScheme='blue'
             onClick={onSubmit}
             >Submit
             </Button>
