@@ -129,7 +129,7 @@ const SignUpForm = ( { visitorId, setAccountCreated, username, setUsername, emai
   return (
     <Box>
       <VStack >
-        <Heading mb={6}>Create an Account</Heading>
+        <Heading mb={6}>Create Account</Heading>
         <Box maxWidth={"75%"} width={"100%"}>
           <Stack spacing={3}>
             <Box>
