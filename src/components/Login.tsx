@@ -123,6 +123,7 @@ const Login = ( { visitorId, setIsLoggedIn, username, setUsername, password, set
                   </FormControl>
                 </Box>
                 <Button
+                colorScheme='blue'
                 onClick={onSubmit}
                 >Submit
                 </Button>
