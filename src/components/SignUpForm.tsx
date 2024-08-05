@@ -1,30 +1,32 @@
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Stack, VStack, useDisclosure } from "@chakra-ui/react"
-import { useEffect, useState } from "react";
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Stack, VStack } from "@chakra-ui/react"
 import { validateInputs } from "../utils/validateInputs";
 import createUserSubmit from "../utils/createUserSubmit";
 import { useToast } from '@chakra-ui/react'
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 type Props = {
-  has2FA: boolean;
-  setHas2Fa: React.Dispatch<React.SetStateAction<boolean>>;
+  visitorId: string | null;
+  setAccountCreated: React.Dispatch<React.SetStateAction<boolean>>
+  username: string;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
+  email: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+  password: string;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  secondPassword: string;
+  setSecondPassword: React.Dispatch<React.SetStateAction<string>>;
+  usernameSubmitted: boolean;
+  setUsernameSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+  emailSubmitted: boolean;
+  setEmailSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+  passwordSubmitted: boolean;
+  setPasswordSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+  secondPasswordSubmitted: boolean;
+  setSecondPasswordSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
+const SignUpForm = ( { visitorId, setAccountCreated, username, setUsername, email, setEmail, password, setPassword, secondPassword, setSecondPassword, usernameSubmitted, setUsernameSubmitted, emailSubmitted, setEmailSubmitted, passwordSubmitted, setPasswordSubmitted, secondPasswordSubmitted, setSecondPasswordSubmitted}: Props ) => {
 
   const toast = useToast();
-
-  const [fPHash, setFpHash] = useState<string | null>(null);
-
-  const [username, setUsername] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [secondPassword, setSecondPassword] = useState<string>("")
-
-  const [usernameSubmitted, setUsernameSubmitted] = useState<boolean>(false);
-  const [emailSubmitted, setEmailSubmitted] = useState<boolean>(false);
-  const [passwordSubmitted, setPasswordSubmitted] = useState<boolean>(false);
-  const [secondPasswordSubmitted, setSecondPasswordSubmitted] = useState<boolean>(false);
 
   const isErrorUsername = !validateInputs.isValidUsername(username) && usernameSubmitted;
   const isErrorEmail = !validateInputs.isValidEmail(email) && emailSubmitted;
@@ -66,8 +68,7 @@ const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
         username: username,
         email: email,
         password: password,
-        visitorId: fPHash,
-        has2FA: has2FA
+        visitorId: visitorId,
       });
 
       if (response.success === false) {
@@ -88,6 +89,7 @@ const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
           duration: 7000,
           isClosable: true,
         });
+        setAccountCreated(true);
       }
 
 
@@ -124,23 +126,10 @@ const SignUpForm = ( { has2FA, setHas2Fa }: Props ) => {
     }
   };
 
-
-  useEffect(() => {
-    const setFp = async () => {
-      const fp = await FingerprintJS.load();
-
-      const { visitorId } = await fp.get();
-
-      setFpHash(visitorId);
-    };
-
-    setFp();
-  }, []);
-
   return (
     <Box>
       <VStack >
-        <Heading mb={6}>Create an Account</Heading>
+        <Heading mb={6}>Create Account</Heading>
         <Box maxWidth={"75%"} width={"100%"}>
           <Stack spacing={3}>
             <Box>

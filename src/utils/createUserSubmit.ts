@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const createUserSubmit = async (userData: object) => {
-  console.log(process.env.REACT_APP_BACKEND_URL)
   try {
     const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/sign-up`, userData);
     return response.data;

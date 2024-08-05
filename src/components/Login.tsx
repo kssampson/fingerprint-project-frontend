@@ -1,31 +1,33 @@
-import { useState } from "react";
 import { validateInputs } from "../utils/validateInputs";
 import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Stack, VStack, useToast, Spinner } from "@chakra-ui/react"
 import login from "../utils/login";
 
 type Props = {
+  visitorId: string | null;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  username: string;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
+  password: string;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  usernameSubmitted: boolean;
+  setUsernameSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+  passwordSubmitted: boolean;
+  setPasswordSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
 }
 
-const Login = ( { setIsLoggedIn, isOpen, onOpen}: Props ) => {
+const Login = ( { visitorId, setIsLoggedIn, username, setUsername, password, setPassword, usernameSubmitted, setUsernameSubmitted, passwordSubmitted, setPasswordSubmitted, isOpen, onOpen}: Props ) => {
 
   const toast = useToast();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [emailSubmitted, setEmailSubmitted] = useState(false);
-  const [passwordSubmitted, setPasswordSubmitted] = useState(false);
-
-  const isErrorUsername = !validateInputs.isValidUsername(email) && emailSubmitted;
+  const isErrorUsername = !validateInputs.isValidUsername(username) && usernameSubmitted;
   const isErrorPassword = !validateInputs.isValidPassword(password) && passwordSubmitted;
 
   const onChangeName = (e: any) => {
-    setEmailSubmitted(false);
-    setEmail(e.target.value);
+    setUsernameSubmitted(false);
+    setUsername(e.target.value);
   }
 
   const onChangePassword = (e: any) => {
@@ -33,73 +35,55 @@ const Login = ( { setIsLoggedIn, isOpen, onOpen}: Props ) => {
     setPassword(e.target.value);
   }
 
-  const resetEmailPasswordStates = () => {
-    setEmail("");
+  const resetUsernamePasswordStates = () => {
+    setUsername("");
     setPassword("");
-    setEmailSubmitted(false);
+    setUsernameSubmitted(false);
     setPasswordSubmitted(false);
     return null;
   }
 
   const onSubmit = async () => {
       try {
-        setEmailSubmitted(true);
+        setUsernameSubmitted(true);
         setPasswordSubmitted(true);
-        const response = (await login(email, password)).data;
+        const response = (await login(username, password, visitorId)).data;
         if (response.success) {
-          resetEmailPasswordStates();
+          resetUsernamePasswordStates();
           setIsLoggedIn(true);
           toast({
             title: "Login successful.",
             position: "top-right",
             description: `${response.message}`,
             status: "success",
-            duration: 3000,
+            duration: 7000,
             isClosable: true,
           });
-          toast({
-            title: "Login successful.",
-            position: "top-right",
-            description: `${response.message}`,
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          });
+          resetUsernamePasswordStates();
         } else if (!response.success) {
           //check for invalid email
-          if (response.inValidEmail) {
+          if (response.inValidEmail || response.invalidUsername || response.inValidPassword || response.noVisitorRecord) {
             toast({
               title: "Error:",
               position: "top-right",
               description: `${response.message}`,
               status: "error",
-              duration: 3000,
+              duration: 7000,
               isClosable: true,
             });
-            resetEmailPasswordStates();
-          } else if (response.inValidPassword) {
-            toast({
-              title: "Error:",
-              position: "top-right",
-              description: `${response.message}`,
-              status: "error",
-              duration: 3000,
-              isClosable: true,
-            });
-            resetEmailPasswordStates();
+            resetUsernamePasswordStates();
           } else if (response.needs2Fa) {
             toast({
               title: "Notice: ",
               position: "top-right",
               description: `${response.message}`,
               status: "error",
-              duration: 3000,
+              duration: 7000,
               isClosable: true,
             });
             onOpen();
           }
         }
-        resetEmailPasswordStates();
         return;
       } catch (error) {
         toast({
@@ -107,10 +91,10 @@ const Login = ( { setIsLoggedIn, isOpen, onOpen}: Props ) => {
           position: "top-right",
           description: `${error}`,
           status: "error",
-          duration: 3000,
+          duration: 7000,
           isClosable: true,
         });
-        resetEmailPasswordStates();
+        resetUsernamePasswordStates();
       }
   }
 
@@ -122,8 +106,8 @@ const Login = ( { setIsLoggedIn, isOpen, onOpen}: Props ) => {
           <Stack spacing={3}>
                 <Box>
                   <FormControl isInvalid={isErrorUsername} isRequired>
-                    <FormLabel>Email:</FormLabel>
-                    <Input type='text' value={email ? email : ""} onChange={onChangeName} />
+                    <FormLabel>Username:</FormLabel>
+                    <Input type='text' value={username ? username : ""} onChange={onChangeName} />
                     {!isErrorUsername ? null : (
                       <FormErrorMessage>Name is required.</FormErrorMessage>
                     )}

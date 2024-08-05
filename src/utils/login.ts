@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const login = async (email: string, password: string) => {
+const login = async (username: string, password: string, visitorId: string | null) => {
   try {
-    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/log-in`, {email, password})
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/log-in`, {username, password, visitorId})
     return response
   } catch(error){
     throw new Error;

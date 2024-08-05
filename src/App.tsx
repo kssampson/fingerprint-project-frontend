@@ -1,54 +1,143 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
-import { Box, VStack, Heading, useDisclosure } from '@chakra-ui/react';
+import { Box, VStack, Heading, Button, useDisclosure } from '@chakra-ui/react';
 import SignUpForm from './components/SignUpForm';
 import Login from './components/Login';
 import LoginSuccessful from './components/LoginSuccessful';
-import TwoFAModal from './components/TwoFAModal';
-import VerifiedLogin from './components/VerifiedLogin';
+import OtpModal from './components/OtpModal';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 function App() {
-
+  const [visitorId, setVisitorId] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [has2FA, setHas2Fa] = useState<boolean>(false);
-  const [token, setToken] = useState<null | string>(null);
-  const [toggleHasTokenModal, setToggleHasTokenModal] = useState<boolean>(false);
+  const [accountCreated, setAccountCreated] = useState<boolean>(false);
+  const [toggleLogInSignUp, setToggleLogInSignUp] = useState<boolean>(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [secondPassword, setSecondPassword] = useState<string>("");
+
+  const [usernameSubmitted, setUsernameSubmitted] = useState<boolean>(false);
+  const [emailSubmitted, setEmailSubmitted] = useState<boolean>(false);
+  const [passwordSubmitted, setPasswordSubmitted] = useState<boolean>(false);
+  const [secondPasswordSubmitted, setSecondPasswordSubmitted] = useState<boolean>(false);
+
   useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const token = queryParams.get('token');
-    if (token) {
-      setToken(token);
-      setToggleHasTokenModal(true);
-    }
+    const setFp = async () => {
+      const fp = await FingerprintJS.load();
+      const { visitorId } = await fp.get();
+      setVisitorId(visitorId);
+    };
+
+    setFp();
   }, []);
+
+  const handleToggleLogInSignUpClicked = () => {
+    setToggleLogInSignUp(!toggleLogInSignUp);
+    setUsername('');
+    setEmail('');
+    setPassword('');
+    setSecondPassword('');
+  };
 
   return (
     <VStack m={6}>
-      {toggleHasTokenModal ? (
-        <>
-        <VerifiedLogin setToggleHasTokenModal={setToggleHasTokenModal} token={token} setToken={setToken} setIsLoggedIn={setIsLoggedIn}/>
-        </>
-      ) : (
-        <>
-          {isLoggedIn ? (
-            <LoginSuccessful />
-          ) : (
-            <>
-            <SignUpForm has2FA={has2FA} setHas2Fa={setHas2Fa}/>
-          <Box>
-            <VStack>
-            <Heading as='h5' size='md' m={8}>or</Heading>
-            </VStack>
-          </Box>
-            <Login isOpen={isOpen} onOpen={onOpen} onClose={onClose} setIsLoggedIn={setIsLoggedIn} />
-            </>
-          )}
-          <TwoFAModal isOpen={isOpen} onOpen={onOpen} onClose={onClose}/>
-        </>
-      )}
+      <>
+        {isLoggedIn ? (
+          <LoginSuccessful />
+        ) : (
+          <>
+            {!accountCreated ? (
+              <>
+                {!toggleLogInSignUp ? (
+                  <>
+                    <SignUpForm
+                      visitorId={visitorId}
+                      setAccountCreated={setAccountCreated}
+                      username={username}
+                      setUsername={setUsername}
+                      email={email}
+                      setEmail={setEmail}
+                      password={password}
+                      setPassword={setPassword}
+                      secondPassword={secondPassword}
+                      setSecondPassword={setSecondPassword}
+                      usernameSubmitted={usernameSubmitted}
+                      setUsernameSubmitted={setUsernameSubmitted}
+                      emailSubmitted={emailSubmitted}
+                      setEmailSubmitted={setEmailSubmitted}
+                      passwordSubmitted={passwordSubmitted}
+                      setPasswordSubmitted={setPasswordSubmitted}
+                      secondPasswordSubmitted={secondPasswordSubmitted}
+                      setSecondPasswordSubmitted={setSecondPasswordSubmitted}
+                    />
+                    <Box>
+                      <VStack>
+                        <Heading as='h5' size='md' m={8}>or</Heading>
+                        <Button colorScheme='blue' onClick={handleToggleLogInSignUpClicked}>Login</Button>
+                      </VStack>
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <Login
+                      visitorId={visitorId}
+                      username={username}
+                      setUsername={setUsername}
+                      password={password}
+                      setPassword={setPassword}
+                      usernameSubmitted={usernameSubmitted}
+                      passwordSubmitted={passwordSubmitted}
+                      setPasswordSubmitted={setPasswordSubmitted}
+                      setUsernameSubmitted={setUsernameSubmitted}
+                      isOpen={isOpen}
+                      onOpen={onOpen}
+                      onClose={onClose}
+                      setIsLoggedIn={setIsLoggedIn}
+                    />
+                    <Box>
+                      <VStack>
+                        <Heading as='h5' size='md' m={8}>or</Heading>
+                        <Button colorScheme='blue' onClick={handleToggleLogInSignUpClicked}>Create Account</Button>
+                      </VStack>
+                    </Box>
+                  </>
+                )}
+              </>
+            ) : (
+              <Login
+                visitorId={visitorId}
+                username={username}
+                setUsername={setUsername}
+                password={password}
+                setPassword={setPassword}
+                usernameSubmitted={usernameSubmitted}
+                passwordSubmitted={passwordSubmitted}
+                setPasswordSubmitted={setPasswordSubmitted}
+                setUsernameSubmitted={setUsernameSubmitted}
+                isOpen={isOpen}
+                onOpen={onOpen}
+                onClose={onClose}
+                setIsLoggedIn={setIsLoggedIn}
+              />
+            )}
+          </>
+        )}
+        <OtpModal
+          visitorId={visitorId}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+          isOpen={isOpen}
+          onOpen={onOpen}
+          onClose={onClose}
+          setIsLoggedIn={setIsLoggedIn}
+        />
+      </>
     </VStack>
   );
 }
