@@ -54,20 +54,17 @@ Form component for user registration.
 ## Login
 Form component for user login.
 
+## OtpModal
+Modal component for handling 2FA via a one time passcode.
+
 ## LoginSuccessful
 Simple component displayed upon successful login.
 
-## TwoFAModal
-Modal component for handling 2FA.
-
-## VerifiedLogin
-Component for handling login with a verification token.
 
 # API Endpoints
 - Sign-Up: POST /auth/sign-up
 - Log-In: POST /auth/log-in
-- Verified Log-In: POST /auth/verified-log-in
-- Verify Email: POST /auth/verify-email
+- Two Factor Authentication via one-time passcode: POST /auth/process-otp
 
 
 ## ✉ Find me on:
